@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import MainNavigator from './navigation/MainNavigator';
+import AppLayout from './layouts/AppLayout';
 
-function App() {
+const queryClient = new QueryClient();
+
+export default function App() {
+
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: 'mantine-color-scheme',
+    defaultValue: 'light',
+    getInitialValueInEffect: true,
+  });
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
+  useHotkeys([['mod+J', () => toggleColorScheme()]]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
+    >
+      <MantineProvider
+        theme={{ colorScheme, loader: "bars" }}
+        withGlobalStyles
+        withNormalizeCSS
+      >
+        <Notifications autoClose={4000} position="top-right" />
+        <QueryClientProvider client={queryClient}>
+          <AppLayout>
+            <MainNavigator />
+          </AppLayout>
+        </QueryClientProvider>
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 }
-
-export default App;
