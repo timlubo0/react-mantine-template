@@ -6,6 +6,9 @@ import {
   rem,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { sideMenu } from '../../navigation/menu';
+import { Link } from 'react-router-dom';
+import { useFeaturePermissions } from '../../features/accessControl/hooks/permissions';
 
 const HEADER_HEIGHT = rem(60);
 
@@ -58,43 +61,33 @@ const useStyles = createStyles((theme) => ({
 
 export default function Sidebar() {
 
-  const links = [
-    {
-      "link": "/about",
-      "label": "Dashboard"
-    },
-    {
-      "link": "/pricing",
-      "label": "Pricing"
-    },
-    {
-      "link": "/learn",
-      "label": "Learn"
-    },
-    {
-      "link": "/community",
-      "label": "Community"
-    }
-  ];
+  const links = sideMenu;
 
   const [opened, { close }] = useDisclosure(false);
-  const [active, setActive] = useState(links[0].link);
+  const [active, setActive] = useState(links[0].href);
   const { classes, cx } = useStyles();
 
-  const items = links.map((link) => (
-    <a
-      key={link.label}
-      href={link.link}
-      className={cx(classes.link, { [classes.linkActive]: active === link.link })}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(link.link);
-        close();
-      }}
-    >
-      {link.label}
-    </a>
-  ));
+  const permissionsChecker = useFeaturePermissions();
+
+  const items = links.map((link) =>
+    permissionsChecker(link.href)?.canRead ? (
+      <Link
+        key={link.title}
+        to={link.href}
+        className={cx(classes.link, {
+          [classes.linkActive]: active === link.href,
+        })}
+        onClick={() => {
+          setActive(link.href);
+          close();
+        }}
+      >
+        {link.title}
+      </Link>
+    ) : (
+      <></>
+    )
+  );
 
   return (
     <Header

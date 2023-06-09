@@ -7,10 +7,11 @@ import { useRolesMutation } from '../../hooks/roles';
 interface Props{
     opened: boolean;
     onClose: () => void;
-    role?: IRole; 
+    role?: IRole;
+    centered?: boolean; 
 }
 
-function RoleFormModal({ opened, onClose, role }: Props) {
+function RoleFormModal({ opened, onClose, role, centered = true }: Props) {
 
     const mutation = useRolesMutation({
       onSuccess: (response) => {
@@ -40,7 +41,7 @@ function RoleFormModal({ opened, onClose, role }: Props) {
                 onClose={onClose} 
                 title="Role"
                 size={'lg'}
-                centered
+                centered={centered}
             >
                 <RoleForm onSubmit={handleSubmit} isLoading={mutation.isLoading} role={role} />
             </Modal>

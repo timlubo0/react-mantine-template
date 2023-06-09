@@ -6,6 +6,8 @@ import { DebouncedInput } from './DebouncedInput';
 import Pagination from './Pagination';
 import { createStyles, Table as CTable, Checkbox, ScrollArea, rem, ActionIcon, Center, Loader, LoadingOverlay, Alert, Button, Flex, Text } from '@mantine/core';
 import { IconPencil, IconAlertCircle } from '@tabler/icons-react';
+import { useLocation } from 'react-router-dom';
+import { useFeaturePermissions } from '../../features/accessControl/hooks/permissions';
 
 interface ReactTableProps<T extends object> {
   data: T[];
@@ -123,12 +125,17 @@ export const Table = <T extends object>({
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </td>
         ))}
-        {isEditable && (
+        {isEditable ? (
           <td>
-            <ActionIcon onClick={() => onEdit?.(row.original) } variant="outline">
+            <ActionIcon
+              onClick={() => onEdit?.(row.original)}
+              variant="outline"
+            >
               <IconPencil size={"1.25rem"} />
             </ActionIcon>
           </td>
+        ) : (
+          <></>
         )}
       </tr>
     );
@@ -177,7 +184,7 @@ export const Table = <T extends object>({
                           )}
                     </th>
                   ))}
-                  {isEditable && <th></th>}
+                  {isEditable ? <th></th> : <></>}
                 </tr>
               ))}
             </thead>
@@ -200,7 +207,7 @@ export const Table = <T extends object>({
           color="red"
         >
           <Flex justify={'space-between'}>
-            <Text>Votre ordinateur semble n'est pas avoir une connexion internet!</Text>
+            <Text>Erreur lors de la lecture des données!</Text>
             <Button onClick={() => window.location.reload()} size='xs'>Actualiser</Button>
           </Flex>
         </Alert>

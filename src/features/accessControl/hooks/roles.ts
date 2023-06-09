@@ -6,22 +6,37 @@ import { IRole } from "../types";
 import { IMutationProps } from "../../types";
 
 export const useRoles = (params?: IPaginationQueryParams) => {
-    const { data, ...rest } = useQuery(
-        {
-            queryKey: [endPoints.roles, params], 
-            queryFn: () => rolesService.findAll(params),
-            keepPreviousData: true,
-            staleTime: Infinity,
-            enabled: true
-        },
-    );
+  const { data, ...rest } = useQuery(
+    {
+      queryKey: [endPoints.roles, params], 
+      queryFn: () => rolesService.findAll(params),
+      keepPreviousData: true,
+      staleTime: Infinity,
+      enabled: true
+    },
+  );
 
-    return {
-        data: data?.data || [],
-        meta: data?.meta || {},
-        errorResponse: data?.meta == undefined && !rest.isLoading,
-        ...rest
-    };
+  return {
+    data: data?.data || [],
+    meta: data?.meta || {},
+    errorResponse: data?.meta == undefined && !rest.isLoading,
+    ...rest
+  };
+};
+
+export const useRole = (uid: string) => {
+  const { data, ...rest } = useQuery(
+    {
+      queryKey: [`${endPoints.roles}${uid}`], 
+      queryFn: () => rolesService.find(uid),
+    },
+  );
+
+  return {
+    data: data,
+    errorResponse: data?.id == undefined && !rest.isLoading,
+    ...rest
+  };
 };
 
 export const useRolesMutation = ({

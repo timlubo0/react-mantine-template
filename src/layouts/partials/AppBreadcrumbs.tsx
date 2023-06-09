@@ -1,16 +1,21 @@
 import { Breadcrumbs, Anchor, Box } from '@mantine/core';
+import { Routes } from '../../navigation/routes';
+import { Link } from 'react-router-dom';
+import { useFeaturePermissions } from '../../features/accessControl/hooks/permissions';
 
 const items = [
-  { title: 'Mantine', href: '#' },
+  { title: 'Dashboard', href: Routes.home },
   { title: 'Mantine hooks', href: '#' },
-  { title: 'use-id', href: '#' },
 ].map((item, index) => (
-  <Anchor href={item.href} key={index}>
-    {item.title}
-  </Anchor>
+  <Link to={item.href} key={index} style={{ textDecoration: 'none' }}>
+    <Anchor>
+      {item.title}
+    </Anchor>
+  </Link>
 ));
 
 function AppBreadcrumbs() {
+    
   return (
     <Box
       maw={{ sm: "full", md: "full", lg: "full", xl: 1200 }}

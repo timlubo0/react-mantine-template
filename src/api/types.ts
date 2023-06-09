@@ -1,6 +1,10 @@
 export interface IPaginationQueryParams{
-    page: number;
+    page?: number;
     per_page: number;
+    keyword?: string;
+    field?: string;
+    key?: string;
+    value?: string;
 }
 
 export interface IQueryResults{

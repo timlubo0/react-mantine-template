@@ -14,7 +14,7 @@ export const api = {
     get: async ({
         endPoint,
         params,
-        authorization = sessionStorage.getItem("access_token") || "",
+        authorization = sessionStorage.getItem(`${process.env.REACT_APP_ACCESS_TOKEN_NAME}`) || "",
         method = 'GET'
     }: ApiProps) => {
         try {
@@ -38,7 +38,7 @@ export const api = {
     post: async ({
         endPoint,
         data,
-        authorization = sessionStorage.getItem("access_token") || "",
+        authorization = sessionStorage.getItem(`${process.env.REACT_APP_ACCESS_TOKEN_NAME}`) || "",
         method = 'POST',
         contentType = "application/json",
     }: ApiPostProps) => {

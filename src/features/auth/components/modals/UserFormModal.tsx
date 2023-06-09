@@ -7,10 +7,11 @@ import { toast } from '../../../../utils/toast';
 interface Props{
     opened: boolean;
     onClose: () => void;
-    user?: IUser; 
+    user?: IUser;
+    centered?: boolean;  
 }
 
-function UserFormModal({ opened, onClose, user }: Props) {
+function UserFormModal({ opened, onClose, user, centered = true }: Props) {
 
     const mutation = useUsersMutation({
       onSuccess: (response) => {
@@ -26,6 +27,7 @@ function UserFormModal({ opened, onClose, user }: Props) {
       onError: () => {
         toast.error();
       },
+      model: user
     });
 
     const handleSubmit = (user: IUser) => {
@@ -39,7 +41,7 @@ function UserFormModal({ opened, onClose, user }: Props) {
                 onClose={onClose} 
                 title="Utilisateur"
                 size={'lg'}
-                centered
+                centered={centered}
             >
                 <UserForm onSubmit={handleSubmit} isLoading={mutation.isLoading} user={user} />
             </Modal>

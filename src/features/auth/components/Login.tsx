@@ -5,15 +5,18 @@ import { ILogin } from "../types";
 import { useLogin } from "../hooks/auth";
 import { toast } from "../../../utils/toast";
 import { loginStyles } from "../styles/loginStyles";
+import  secureLocalStorage  from  "react-secure-storage";
+import { decryptData } from "../../../utils/crypto";
 
 function Login(){
 
     const login = useLogin({
         onSuccess: (response) => {
-            if (response?.access_token) {
+            const decryptedData = decryptData(`${response}`);
+            if (decryptedData?.access_token) {
 
-                sessionStorage.setItem('access_token', response.access_token);
-                sessionStorage.setItem('user', JSON.stringify(response.user));
+                sessionStorage.setItem(`${process.env.REACT_APP_ACCESS_TOKEN_NAME}`, decryptedData.access_token);
+                secureLocalStorage.setItem(`${process.env.REACT_APP_SESSION_USER}`, decryptedData.user);
 
                 toast.show({
                     title: "Hello world",

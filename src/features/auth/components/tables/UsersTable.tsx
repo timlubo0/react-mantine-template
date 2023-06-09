@@ -5,9 +5,13 @@ import { filterFns } from "../../../../components/tables/filterFns";
 import { IUser } from "../../types";
 import { useUsers } from "../../hooks/users";
 import { Badge, Anchor } from '@mantine/core';
+import { Link } from "react-router-dom";
+import { Routes } from "../../../../navigation/routes";
+import { useFeaturePermissions } from "../../../accessControl/hooks/permissions";
 
 interface Props{
-  filters?: {
+  filters: {
+    keyword?: string;
   };
   onSelect?: (users: IUser[]) => void;
   onEdit?: (user: IUser) => void;
@@ -16,16 +20,28 @@ interface Props{
 function UsersTable({ filters, onSelect, onEdit }: Props){
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const { keyword } = filters;
 
-  const usersQuery = useUsers({ page: currentPage, per_page: 10 });
+  const usersQuery = useUsers({
+    page: currentPage,
+    per_page: 10,
+    field: "name",
+    keyword: keyword,
+  });
 
   const { meta, data, isLoading, isFetching, errorResponse } = usersQuery;
+
+  const permissionsChecker = useFeaturePermissions();
 
   const cols = React.useMemo<ColumnDef<IUser>[]>(
     () => [
       {
         header: "Name",
-        cell: (row) => <Anchor component="span" fz="sm">{`${row.renderValue()}`}</Anchor>,
+        cell: (cell) => (
+          <Link to={`${Routes.users}/${cell.row.original.uid}`}>
+            <Anchor component="span" fz="sm">{`${cell.renderValue()}`}</Anchor>
+          </Link>
+        ),
         accessorKey: "name",
       },
       {
@@ -42,10 +58,8 @@ function UsersTable({ filters, onSelect, onEdit }: Props){
         header: "Role",
         cell: (row) => (
           <Badge
-            variant="gradient"
-            gradient={{ from: "indigo", to: "cyan" }}
             component="span"
-            tt={'lowercase'}
+            tt={"lowercase"}
           >{`${row.renderValue()}`}</Badge>
         ),
         accessorKey: "role.name",
@@ -75,6 +89,7 @@ function UsersTable({ filters, onSelect, onEdit }: Props){
         onEdit={onEdit}
         onSelect={onSelect}
         error={errorResponse}
+        isEditable={permissionsChecker(Routes.users)?.canUpdate}
       />
     </>
   );

@@ -4,6 +4,7 @@ export interface IRole{
     name: string;
     slug?: string;
     description?: string;
+    permissions?: IPermission[]
 }
 
 export interface IPermission{
@@ -21,7 +22,9 @@ export interface IFeature{
     id?: string;
     uid?: string;
     name: string;
+    description: string;
     slug: string;
     icon?: string;
+    url?: string;
     subFeatures?: IFeature[]
 }

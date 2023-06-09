@@ -1,10 +1,12 @@
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { ModalsProvider } from '@mantine/modals';
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { BrowserRouter as Router } from "react-router-dom";
 import MainNavigator from './navigation/MainNavigator';
 import AppLayout from './layouts/AppLayout';
 
@@ -32,12 +34,16 @@ export default function App() {
         withGlobalStyles
         withNormalizeCSS
       >
-        <Notifications autoClose={4000} position="top-right" />
-        <QueryClientProvider client={queryClient}>
-          <AppLayout>
-            <MainNavigator />
-          </AppLayout>
-        </QueryClientProvider>
+        <ModalsProvider>
+          <Notifications autoClose={4000} position="top-right" />
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <AppLayout>
+                <MainNavigator />
+              </AppLayout>
+            </Router>
+          </QueryClientProvider>
+        </ModalsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   );

@@ -17,12 +17,6 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
-  IconNotification,
-  IconCode,
-  IconBook,
-  IconChartPie3,
-  IconFingerprint,
-  IconCoin,
   IconChevronDown,
   IconBell,
   IconScreenShare,
@@ -35,62 +29,40 @@ import { headerStyles } from './styles/headerStyles';
 import UserAvatar from '../../features/auth/components/avatar/UserAvatar';
 import ThemeModeSwitcher from '../../components/ThemeModeSwitcher';
 import { MobileDrawer } from './MobileDrawer';
-  
-const mockdata = [
-  {
-    icon: IconCode,
-    title: 'Open source',
-    description: 'This Pokémon’s cry is very loud and distracting',
-  },
-  {
-    icon: IconCoin,
-    title: 'Free for everyone',
-    description: 'The fluid of Smeargle’s tail secretions changes',
-  },
-  {
-    icon: IconBook,
-    title: 'Documentation',
-    description: 'Yanma is capable of seeing 360 degrees without',
-  },
-  {
-    icon: IconFingerprint,
-    title: 'Security',
-    description: 'The shell’s rounded shape and the grooves on its.',
-  },
-  {
-    icon: IconChartPie3,
-    title: 'Analytics',
-    description: 'This Pokémon uses its flying ability to quickly chase',
-  },
-  {
-    icon: IconNotification,
-    title: 'Notifications',
-    description: 'Combusken battles with the intensely hot flames it spews',
-  },
-];
+import { Link } from 'react-router-dom';
+import { useFeaturePermissions } from '../../features/accessControl/hooks/permissions';
+import { topMenu } from '../../navigation/menu';
 
 export function AppHeader() {
+
+  const permissionsChecker = useFeaturePermissions();
 
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   const { toggle, fullscreen } = useFullscreen();
   const { classes, theme } = headerStyles();
 
-  const links = mockdata.map((item) => (
-    <UnstyledButton className={classes.subLink} key={item.title}>
-      <Group noWrap align="flex-start">
-        <ThemeIcon size={34} variant="default" radius="md">
-          <item.icon size={rem(22)} color={theme.fn.primaryColor()} />
-        </ThemeIcon>
-        <div>
-          <Text size="sm" fw={500}>
-            {item.title}
-          </Text>
-          <Text size="xs" color="dimmed">
-            {item.description}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
+  const links = topMenu.map((item) => (
+    <div key={item.title}>
+      {permissionsChecker(item.href)?.canRead && (
+        <Link to={item.href}>
+          <UnstyledButton className={classes.subLink}>
+            <Group noWrap align="flex-start">
+              <ThemeIcon size={34} variant="default" radius="md">
+                <item.icon size={rem(22)} color={theme.fn.primaryColor()} />
+              </ThemeIcon>
+              <div>
+                <Text size="sm" fw={500}>
+                  {item.title}
+                </Text>
+                <Text size="xs" color="dimmed">
+                  {item.description}
+                </Text>
+              </div>
+            </Group>
+          </UnstyledButton>
+        </Link>
+      )}
+    </div>
   ));
   
   return (
@@ -137,7 +109,7 @@ export function AppHeader() {
 
                 <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
                   <Group position="apart" px="md">
-                    <Text fw={500}>Features</Text>
+                    <Text fw={500}>Parametres</Text>
                     <Anchor href="#" fz="xs">
                       View all
                     </Anchor>

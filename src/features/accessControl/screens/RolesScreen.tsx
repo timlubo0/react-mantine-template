@@ -17,6 +17,7 @@ function RolesScreen(){
   const [role, setRole] = useState<IRole>();
   const [selectedRoles, setSelectedRoles] = useState<IRole[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
+  const [keyword, setKeyword] = useState<string>();
 
   const deleteMutation = useRoleDelete({
     onSuccess: (response) => {
@@ -66,8 +67,9 @@ function RolesScreen(){
         buttonTitle="Nouveau role"
         actions={crudActions}
         showActions={showActions}
+        onSearch={(keyword) => setKeyword(keyword)}
       />
-      <RolesTable onEdit={handleEdit} onSelect={handleSelection} />
+      <RolesTable onEdit={handleEdit} onSelect={handleSelection} filters={{keyword: keyword}} />
       <RoleFormModal
         opened={roleFormModal[0]}
         onClose={roleFormModal[1].close}
